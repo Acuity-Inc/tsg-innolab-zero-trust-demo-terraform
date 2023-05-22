@@ -38,11 +38,19 @@ To use these Terraform scripts, follow these steps:
 3. Create a `main.tfvars` file in the project directory and provide values for all the variables declared in `variables.tf`. Here's an example:
 
    ```hcl
-   aws_access_key = "your_aws_access_key"
-   aws_secret_key = "your_aws_secret_key"
-   okta_org_name  = "your_okta_org_name"
-   okta_base_url  = "okta.com"
-   okta_api_token = "your_okta_api_token"
+    s3_bucket = "mybucket"
+    s3_key = "path/to/my/key"
+    s3_region = "us-east-1"
+    aws_region = "us-east-1"
+    aws_access_key = "your_aws_access_key"
+    aws_secret_key = "your_aws_secret_key"
+    okta_org_name  = "your_okta_org_name"
+    okta_base_url  = "okta.com"
+    okta_api_token = "your_okta_api_token"
+    okta_user_first_name = "Example"
+    okta_user_last_name = "User"
+    okta_user_login = "example@example.com"
+    okta_user_email = "example@example.com"
    ```
 
 4. Initialize Terraform:

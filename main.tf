@@ -11,14 +11,14 @@ terraform {
   }
 
   backend "s3" {
-    bucket = "mybucket"
-    key    = "path/to/my/key"
-    region = "us-east-1"
+    bucket = var.s3_bucket
+    key    = var.s3_key
+    region = var.s3_region
   }
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = var.aws_region
   access_key = var.aws_access_key
   secret_key = var.aws_secret_key
 }
@@ -30,8 +30,8 @@ provider "okta" {
 }
 
 resource "okta_user" "example" {
-  first_name = "Example"
-  last_name  = "User"
-  login      = "example@example.com"
-  email      = "example@example.com"
+  first_name = var.okta_user_first_name
+  last_name  = var.okta_user_last_name
+  login      = var.okta_user_login
+  email      = var.okta_user_email
 }
