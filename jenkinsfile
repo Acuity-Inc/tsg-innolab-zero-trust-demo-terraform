@@ -29,10 +29,12 @@ pipeline {
                         // Assign the retrieved values to Jenkins environment variables
                         ssmParameterNames.each { parameterName ->
                             def parameterValue = ssmJson.Parameters.find { it.Name == parameterName }?.Value ?: ''
-                            env."${parameterName}" = parameterValue
+                            // Remove '/ztd/terraform/' prefix and capitalize the letters
+                            def envVariableName = parameterName - '/ztd/terraform/' - [/./, &.toUpperCase()]
+                            env."${envVariableName}" = parameterValue
                             // Log the value of '/ztd/terraform/aws_region'
-                            echo "The value of ${parameterName} is: ${parameterValue}"
-                        }
+                            echo "The value of ${envVariableName} is: ${parameterValue}"
+                }
                     } catch (Exception e){
                         echo "Error occurred while retrieving environment variables: ${e.message}"
                     }
