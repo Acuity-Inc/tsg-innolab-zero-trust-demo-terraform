@@ -18,8 +18,8 @@ pipeline {
                         ]
 
                         def ssmCommand = "aws ssm get-parameters --names " +
-                                        "${ssmParameterNames.join(' ')} " +
-                                        "--with-decryption --output json"
+                                         "${ssmParameterNames.collect { "\"$it\"" }.join(" ")} " +
+                                         "--with-decryption --output json"
         
                         def ssmOutput = sh(script: ssmCommand, returnStdout: true).trim()
                         def ssmJson = new JsonSlurper().parseText(ssmOutput)
@@ -28,9 +28,8 @@ pipeline {
                         ssmParameterNames.each { parameterName ->
                             def parameterValue = ssmJson.Parameters.find { it.Name == parameterName }?.Value ?: ''
                             env."${parameterName}" = parameterValue
-
-                        // Log the value of '/ztd/terraform/aws_region'
-                        echo "The value of /ztd/terraform/aws_region is: ${env.'/ztd/terraform/aws_region'}"
+                            // Log the value of '/ztd/terraform/aws_region'
+                            echo "The value of ${parameterName} is: ${parameterValue}"
                         }
                     } catch (Exception e){
                         echo "Error occurred while retrieving environment variables: ${e.message}"
