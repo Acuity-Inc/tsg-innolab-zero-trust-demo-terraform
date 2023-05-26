@@ -48,9 +48,9 @@ pipeline {
                 script {
                     try{
                         // Execute curl command to retrieve API token
-                        def authorizationHeader = env.OKTA_AUTHORIZATION_HEADER.replace(/['\"]/, '\\$0')
-                        def curlCommand = "curl --silent --request POST --url ${env.OKTA_BASE_URL}/oauth2/default/v1/token --header 'accept: application/json' --header 'authorization: Basic ${authorizationHeader}' --header 'cache-control: no-cache' --header 'content-type: application/x-www-form-urlencoded' --data 'grant_type=client_credentials&scope=okta.myAccount.email.read'"
+                        def curlCommand = "curl --silent --request POST --url ${env.OKTA_BASE_URL}/oauth2/default/v1/token --header 'accept: application/json' --header 'authorization: Basic \\'" + "${env.OKTA_AUTHORIZATION_HEADER}".replaceAll("'", "'\\\\''") + "\\' --header 'cache-control: no-cache' --header 'content-type: application/x-www-form-urlencoded' --data 'grant_type=client_credentials&scope=okta.myAccount.email.read'"
                         def tokenResponse = sh(script: curlCommand, returnStdout: true).trim()
+
 
                         // Parse the token from the response
                         def token = new JsonSlurper().parseText(tokenResponse).access_token
