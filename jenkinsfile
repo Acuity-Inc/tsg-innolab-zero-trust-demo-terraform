@@ -72,29 +72,38 @@ pipeline {
             steps {
                 script {
                     try {
-                        // Define the Docker run command
-                        def dockerRunCommand = """
-                            docker run -d \
-                            -e AWS_S3_BUCKET=${env.AWS_S3_BUCKET} \
-                            -e AWS_S3_KEY=${env.AWS_S3_KEY} \
-                            -e AWS_S3_REGION=${env.AWS_S3_REGION} \
-                            -e AWS_REGION=${env.AWS_REGION} \
-                            -e OKTA_API_TOKEN=${env.OKTA_API_TOKEN} \
-                            --name terraform_container \
-                            hashicorp/terraform:1.4.0
-                        """
-                
-                        // Run the Docker container and get the container ID
-                        def containerId = sh(script: dockerRunCommand, returnStdout: true).trim()
-                        echo "Started Docker container with ID: ${containerId}"
-                        // Check the status of the Docker container
-                        def test = sh 'docker ps'
-                        echo(test)
-                
-                        // Save the container ID for later stages
-                        env.TERRAFORM_CONTAINER_ID = containerId
-                    } catch(Exception e) {
-                        echo "Error occurred while creating Docker container: ${e.message}"
+                        def containerName = 'terraform_container'
+                        def existingContainerId = sh(script: "docker ps -aq -f name=${containerName}", returnStdout: true).trim()
+
+                        if (existingContainerId) {
+                            echo "Container with name ${containerName} already exists with ID ${existingContainerId}"
+                            env.TERRAFORM_CONTAINER_ID = existingContainerId
+                        } else {
+                            echo "Container with name ${containerName} does not exist. Creating it..."
+
+                            // Define the Docker run command
+                            def dockerRunCommand = """
+                                docker run -d \
+                                -e AWS_S3_BUCKET=${env.AWS_S3_BUCKET} \
+                                -e AWS_S3_KEY=${env.AWS_S3_KEY} \
+                                -e AWS_S3_REGION=${env.AWS_S3_REGION} \
+                                -e AWS_REGION=${env.AWS_REGION} \
+                                -e OKTA_API_TOKEN=${env.OKTA_API_TOKEN} \
+                                --name ${containerName} \
+                                hashicorp/terraform:1.4.0
+                            """
+
+                            // Run the Docker container and get the container ID
+                            def containerId = sh(script: dockerRunCommand, returnStdout: true).trim()
+                            echo "Started Docker container with ID: ${containerId}"
+                            // Check the status of the Docker container
+                            sh 'docker ps'
+
+                            // Save the container ID for later stages
+                            env.TERRAFORM_CONTAINER_ID = containerId
+                        } 
+                    }  catch(Exception e) {
+                            echo "Error occurred while creating Docker container: ${e.message}"
                     }
                 }
             }
