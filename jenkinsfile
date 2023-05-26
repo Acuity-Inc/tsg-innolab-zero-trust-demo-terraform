@@ -1,0 +1,75 @@
+import groovy.json.JsonSlurper
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Retrieve Okta API Token') {
+            steps {
+                script {
+                    // Execute curl command to retrieve API token
+                    def curlCommand = "curl --silent --request POST --url ${env.OKTA_BASE_URL}/oauth2/default/v1/token --header 'accept: application/json' --header 'authorization: Basic ${env.OKTA_AUTHORIZATION_HEADER}' --header 'cache-control: no-cache' --header 'content-type: application/x-www-form-urlencoded' --data 'grant_type=client_credentials&scope=okta.myAccount.email.read'"
+                    def tokenResponse = sh(script: curlCommand, returnStdout: true).trim()
+
+                    // Parse the token from the response
+                    def token = new JsonSlurper().parseText(tokenResponse).access_token
+
+                    // Set the token as an environment variable
+                    env.OKTA_API_TOKEN = token
+                }
+            }
+        }
+        stage('Retrieve Environment Variables') {
+            steps {
+                script {
+                    def awsRegion = 'your-aws-region'
+                    def awsProfile = 'your-aws-profile'
+                    def ssmParameterNames = [
+                        '/ztd/terraform/aws_s3_bucket',
+                        '/ztd/terraform/aws_s3_key',
+                        '/ztd/terraform/aws_s3_region',
+                        '/ztd/terraform/aws_region',
+                    ]
+                    
+                    // Retrieve environment variables from AWS SSM
+                    def ssmCommand = "aws ssm get-parameters --names " +
+                                      "${ssmParameterNames.join(' ')} " +
+                                      "--region ${awsRegion} --profile ${awsProfile} --with-decryption --output json"
+                    
+                    def ssmOutput = sh(script: ssmCommand, returnStdout: true).trim()
+                    def ssmJson = new JsonSlurper().parseText(ssmOutput)
+                    
+                    // Assign the retrieved values to Jenkins environment variables
+                    ssmParameterNames.each { parameterName ->
+                        def parameterValue = ssmJson.Parameters.find { it.Name == parameterName }?.Value ?: ''
+                        env."${parameterName}" = parameterValue
+                    }
+                }
+            }
+        }
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                sh "terraform init -backend-config=\"bucket=${env.AWS_S3_BUCKET}\" -backend-config=\"key=${env.AWS_S3_KEY}\" -backend-config=\"region=${env.AWS_S3_REGION}\""
+            }
+        }
+
+        stage('Terraform Plan') {
+            steps {
+                sh "terraform plan -var \"aws_region=${env.AWS_REGION}\" -var \"s3_bucket=${env.AWS_S3_BUCKET}\" -var \"s3_key=${env.AWS_S3_KEY}\" -var \"s3_region=${env.AWS_S3_REGION}\" -var \"okta_api_token=${env.OKTA_API_TOKEN}\" -out=tfplan"
+            }
+        }
+
+        stage('Terraform Apply') {
+            steps {
+                sh 'terraform apply -auto-approve tfplan'
+            }
+        }
+    }
+}
