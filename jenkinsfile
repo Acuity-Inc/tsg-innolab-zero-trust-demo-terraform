@@ -73,7 +73,7 @@ pipeline {
                 script {
                     try {
                         def containerName = 'terraform_container'
-                        def existingContainerId = sh(script: "docker ps -aq -f name=${containerName}", returnStdout: true).trim()
+                        def existingContainerId = sh(script: "docker ps -aq -f name=${containerName}", returnStdout: true)
 
                         if (existingContainerId) {
                             echo "Container with name ${containerName} already exists with ID ${existingContainerId}"
