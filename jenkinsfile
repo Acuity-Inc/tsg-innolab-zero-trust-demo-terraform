@@ -51,6 +51,9 @@ pipeline {
                         // Set the token as an environment variable
                         env.OKTA_API_TOKEN = token
 
+                        // Log the value of '/ztd/terraform/aws_region'
+                        echo "The value of /ztd/terraform/aws_region is: ${env.'/ztd/terraform/aws_region'}"
+
                     } catch (Exception e){
                         echo "Error occurred while retrieving Okta API token: ${e.message}"
                     }
@@ -59,32 +62,64 @@ pipeline {
             }
         }
 
-        stage('Docker Run') {
+        stage('Create Docker Container') {
             steps {
                 script {
-                    docker.image('hashicorp/terraform:latest').inside {
-                        stage('Checkout') {
-                            steps {
-                                checkout scm
-                            }
-                        }
+                    // Define the Docker container configuration
+                    def containerConfig = [
+                        image: 'hashicorp/terraform:1.4.0',
+                        args: '-e AWS_S3_BUCKET=' + env.AWS_S3_BUCKET +
+                              ' -e AWS_S3_KEY=' + env.AWS_S3_KEY +
+                              ' -e AWS_S3_REGION=' + env.AWS_S3_REGION +
+                              ' -e AWS_REGION=' + env.AWS_REGION +
+                              ' -e OKTA_API_TOKEN=' + env.OKTA_API_TOKEN,
+                        tty: true
+                    ]
 
-                        stage('Terraform Init') {
-                            steps {
-                                sh "terraform init -backend-config=\"bucket=${env.AWS_S3_BUCKET}\" -backend-config=\"key=${env.AWS_S3_KEY}\" -backend-config=\"region=${env.AWS_S3_REGION}\""
-                            }
-                        }
+                    // Run the Docker container
+                    container = docker.createContainer(containerConfig)
+                    docker.startContainer(container.id)
+                }
+            }
+        }
 
-                        stage('Terraform Plan') {
-                            steps {
-                                sh "terraform plan -var \"aws_region=${env.AWS_REGION}\" -var \"s3_bucket=${env.AWS_S3_BUCKET}\" -var \"s3_key=${env.AWS_S3_KEY}\" -var \"s3_region=${env.AWS_S3_REGION}\" -var \"okta_api_token=${env.OKTA_API_TOKEN}\" -out=tfplan"
-                            }
-                        }
+        stage('Terraform Init') {
+            steps {
+                script {
+                    def execId = docker.containerExec(container.id, ['sh', '-c', "terraform init -backend-config=\"bucket=${env.AWS_S3_BUCKET}\" -backend-config=\"key=${env.AWS_S3_KEY}\" -backend-config=\"region=${env.AWS_S3_REGION}\""])
+                    docker.containerExecStart(container.id, execId.id)
+                }
+            }
+        }
 
-                        stage('Terraform Apply') {
-                            steps {
-                                sh 'terraform apply -auto-approve tfplan'
-                            }
+        stage('Terraform Plan') {
+            steps {
+                script {
+                    def execId = docker.containerExec(container.id, ['sh', '-c', "terraform plan -var \"aws_region=${env.AWS_REGION}\" -var \"s3_bucket=${env.AWS_S3_BUCKET}\" -var \"s3_key=${env.AWS_S3_KEY}\" -var \"s3_region=${env.AWS_S3_REGION}\" -var \"okta_api_token=${env.OKTA_API_TOKEN}\" -out=tfplan"])
+                    docker.containerExecStart(container.id, execId.id)
+                }
+            }
+        }
+
+        stage('Terraform Apply') {
+            steps {
+                script {
+                    def execId = docker.containerExec(container.id, ['sh', '-c', 'terraform apply -auto-approve tfplan'])
+                    docker.containerExecStart(container.id, execId.id)
+                }
+            }
+        }
+
+        stage('Clean Up Docker Container') {
+            steps {
+                script {
+                    // Clean up the Docker container
+                    if (container != null) {
+                        try {
+                            docker.stopContainer(container.id)
+                            docker.removeContainer(container.id)
+                        } catch(Exception cleanupException) {
+                            echo "Failed to cleanup Docker container: ${cleanupException.message}"
                         }
                     }
                 }
