@@ -78,6 +78,8 @@ pipeline {
                         if (existingContainerId) {
                             echo "Container with name ${containerName} already exists with ID ${existingContainerId}"
                             env.TERRAFORM_CONTAINER_ID = existingContainerId
+                            sh 'docker logs ${exisingContainerId}'
+
                         } else {
                             echo "Container with name ${containerName} does not exist. Creating it..."
 
@@ -93,8 +95,11 @@ pipeline {
                                 hashicorp/terraform:1.4.0
                             """
 
+
+
                             // Run the Docker container and get the container ID
                             def containerId = sh(script: dockerRunCommand, returnStdout: true).trim()
+                            sh 'docker logs ${containerId}'
                             echo "Started Docker container with ID: ${containerId}"
                             // Check the status of the Docker container
                             sh 'docker ps -a'
