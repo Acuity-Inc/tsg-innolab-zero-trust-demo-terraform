@@ -89,7 +89,7 @@ pipeline {
                         echo "Started Docker container with ID: ${containerId}"
                         // Check the status of the Docker container
                         def test = sh 'docker ps'
-                        log(test)
+                        echo(test)
                 
                         // Save the container ID for later stages
                         env.TERRAFORM_CONTAINER_ID = containerId
@@ -103,7 +103,7 @@ pipeline {
         stage('Terraform Init') {
             steps {
                 script {
-                    log(env.TERRAFORM_CONTAINER_ID)
+                    echo(env.TERRAFORM_CONTAINER_ID)
                     try {
                         // Define the Docker exec command
                         def dockerExecCommand = """
