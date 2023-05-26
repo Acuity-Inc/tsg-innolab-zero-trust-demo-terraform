@@ -18,8 +18,9 @@ pipeline {
                         ]
 
                         def ssmCommand = "aws ssm get-parameters --names " +
-                                         "${ssmParameterNames.collect { "\"$it\"" }.join(" ")} " +
-                                         "--with-decryption --output json"
+                                            "${ssmParameterNames.collect { '\"$it\"' }.join(" ")} " +
+                                            "--with-decryption --output json"
+                        echo(ssmCommand)
         
                         def ssmOutput = sh(script: ssmCommand, returnStdout: true).trim()
                         def ssmJson = new JsonSlurper().parseText(ssmOutput)
