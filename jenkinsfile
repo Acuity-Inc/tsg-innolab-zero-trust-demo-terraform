@@ -6,82 +6,84 @@ pipeline {
     stages {
         stage('Retrieve Environment Variables') {
             steps {
-                script {
-                    try{
-                        def ssmParameterNames = [
-                        '/ztd/terraform/aws_s3_bucket',
-                        '/ztd/terraform/aws_s3_key',
-                        '/ztd/terraform/aws_s3_region',
-                        '/ztd/terraform/aws_region',
-                        '/ztd/terraform/okta_authorization_header',
-                        '/ztd/terraform/okta_base_url',
-                        ]
+                node{
+                    script {
+                        try{
+                            def ssmParameterNames = [
+                            '/ztd/terraform/aws_s3_bucket',
+                            '/ztd/terraform/aws_s3_key',
+                            '/ztd/terraform/aws_s3_region',
+                            '/ztd/terraform/aws_region',
+                            '/ztd/terraform/okta_authorization_header',
+                            '/ztd/terraform/okta_base_url',
+                            ]
 
-                        def ssmCommand = "aws ssm get-parameters --names " +
-                                        "${ssmParameterNames.join(" ")} " +
-                                        "--with-decryption --output json"
-                        
-        
-                        def ssmOutput = sh(script: ssmCommand, returnStdout: true).trim()
-                        echo(ssmOutput)
-                        def ssmJson = new JsonSlurper().parseText(ssmOutput)
+                            def ssmCommand = "aws ssm get-parameters --names " +
+                                            "${ssmParameterNames.join(" ")} " +
+                                            "--with-decryption --output json"
+                            
+            
+                            def ssmOutput = sh(script: ssmCommand, returnStdout: true).trim()
+                            echo(ssmOutput)
+                            def ssmJson = new JsonSlurper().parseText(ssmOutput)
 
-                        // Assign the retrieved values to Jenkins environment variables
-                        ssmParameterNames.each { parameterName ->
-                            def parameterValue = ssmJson.Parameters.find { it.Name == parameterName }?.Value ?: ''
-                            env."${parameterName}" = parameterValue
-                            // Log the value of '/ztd/terraform/aws_region'
-                            echo "The value of ${parameterName} is: ${parameterValue}"
+                            // Assign the retrieved values to Jenkins environment variables
+                            ssmParameterNames.each { parameterName ->
+                                def parameterValue = ssmJson.Parameters.find { it.Name == parameterName }?.Value ?: ''
+                                env."${parameterName}" = parameterValue
+                                // Log the value of '/ztd/terraform/aws_region'
+                                echo "The value of ${parameterName} is: ${parameterValue}"
+                            }
+                        } catch (Exception e){
+                            echo "Error occurred while retrieving environment variables: ${e.message}"
                         }
-                    } catch (Exception e){
-                        echo "Error occurred while retrieving environment variables: ${e.message}"
                     }
-                    
                 }
             }
         }
 
         stage('Retrieve Okta API Token') {
             steps {
-                script {
-                    try{
-                        // Execute curl command to retrieve API token
-                        def curlCommand = "curl --silent --request POST --url ${env.OKTA_BASE_URL}/oauth2/default/v1/token --header 'accept: application/json' --header 'authorization: Basic ${env.OKTA_AUTHORIZATION_HEADER}' --header 'cache-control: no-cache' --header 'content-type: application/x-www-form-urlencoded' --data 'grant_type=client_credentials&scope=okta.myAccount.email.read'"
-                        def tokenResponse = sh(script: curlCommand, returnStdout: true).trim()
+                node{
+                    script {
+                        try{
+                            // Execute curl command to retrieve API token
+                            def curlCommand = "curl --silent --request POST --url ${env.OKTA_BASE_URL}/oauth2/default/v1/token --header 'accept: application/json' --header 'authorization: Basic ${env.OKTA_AUTHORIZATION_HEADER}' --header 'cache-control: no-cache' --header 'content-type: application/x-www-form-urlencoded' --data 'grant_type=client_credentials&scope=okta.myAccount.email.read'"
+                            def tokenResponse = sh(script: curlCommand, returnStdout: true).trim()
 
-                        // Parse the token from the response
-                        def token = new JsonSlurper().parseText(tokenResponse).access_token
+                            // Parse the token from the response
+                            def token = new JsonSlurper().parseText(tokenResponse).access_token
 
-                        // Set the token as an environment variable
-                        env.OKTA_API_TOKEN = token
+                            // Set the token as an environment variable
+                            env.OKTA_API_TOKEN = token
 
-                        
-
-                    } catch (Exception e){
-                        echo "Error occurred while retrieving Okta API token: ${e.message}"
+                        } catch (Exception e){
+                            echo "Error occurred while retrieving Okta API token: ${e.message}"
+                        }
                     }
-                    
                 }
             }
         }
 
         stage('Create Docker Container') {
             steps {
-                script {
-                    // Define the Docker container configuration
-                    def containerConfig = [
-                        image: 'hashicorp/terraform:1.4.0',
-                        args: '-e AWS_S3_BUCKET=' + env.AWS_S3_BUCKET +
-                              ' -e AWS_S3_KEY=' + env.AWS_S3_KEY +
-                              ' -e AWS_S3_REGION=' + env.AWS_S3_REGION +
-                              ' -e AWS_REGION=' + env.AWS_REGION +
-                              ' -e OKTA_API_TOKEN=' + env.OKTA_API_TOKEN,
-                        tty: true
-                    ]
+                node{
+                    script {
+                        // Define the Docker container configuration
+                        def containerConfig = [
+                            image: 'hashicorp/terraform:1.4.0',
+                            args: '-e AWS_S3_BUCKET=' + env.AWS_S3_BUCKET +
+                                ' -e AWS_S3_KEY=' + env.AWS_S3_KEY +
+                                ' -e AWS_S3_REGION=' + env.AWS_S3_REGION +
+                                ' -e AWS_REGION=' + env.AWS_REGION +
+                                ' -e OKTA_API_TOKEN=' + env.OKTA_API_TOKEN,
+                            tty: true
+                        ]
 
-                    // Run the Docker container
-                    container = docker.createContainer(containerConfig)
-                    docker.startContainer(container.id)
+                        // Run the Docker container
+                        container = docker.createContainer(containerConfig)
+                        docker.startContainer(container.id)
+                    }
                 }
             }
         }
