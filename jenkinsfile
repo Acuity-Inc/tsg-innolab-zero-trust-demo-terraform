@@ -20,9 +20,10 @@ pipeline {
                         def ssmCommand = "aws ssm get-parameters --names " +
                                         "${ssmParameterNames.join(" ")} " +
                                         "--with-decryption --output json"
-                        echo(ssmCommand)
+                        
         
                         def ssmOutput = sh(script: ssmCommand, returnStdout: true).trim()
+                        echo(ssmOutput)
                         def ssmJson = new JsonSlurper().parseText(ssmOutput)
 
                         // Assign the retrieved values to Jenkins environment variables
