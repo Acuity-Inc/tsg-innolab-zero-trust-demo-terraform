@@ -28,10 +28,3 @@ provider "okta" {
   base_url  = var.okta_base_url
   api_token = var.okta_api_token
 }
-
-resource "okta_user" "example" {
-  first_name = var.okta_user_first_name
-  last_name  = var.okta_user_last_name
-  login      = var.okta_user_login
-  email      = var.okta_user_email
-}
