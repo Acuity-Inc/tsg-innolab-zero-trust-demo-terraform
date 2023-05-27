@@ -92,8 +92,9 @@ pipeline {
                                 -e AWS_REGION=${env.AWS_REGION} \
                                 -e OKTA_API_TOKEN=${env.OKTA_API_TOKEN} \
                                 --name ${containerName} \
+                                --entrypoint "/bin/sh" \
                                 hashicorp/terraform:1.4.0 \
-                                tail -f /dev/null
+                                -c "sleep infinity"
                             """
 
 
