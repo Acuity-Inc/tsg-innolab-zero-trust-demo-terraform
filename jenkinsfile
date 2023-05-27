@@ -91,7 +91,7 @@ pipeline {
                                 -e AWS_S3_REGION=${env.AWS_S3_REGION} \
                                 -e AWS_REGION=${env.AWS_REGION} \
                                 -e OKTA_API_TOKEN=${env.OKTA_API_TOKEN} \
-                                --name ${containerName} \
+                                --name ${containerName} \\
                                 --entrypoint "/bin/sh" \
                                 -v "$(pwd):/terraform" \
                                 hashicorp/terraform:1.4.0 \
