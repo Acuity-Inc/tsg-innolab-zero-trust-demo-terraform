@@ -93,8 +93,9 @@ pipeline {
                                 -e OKTA_API_TOKEN=${env.OKTA_API_TOKEN} \
                                 --name ${containerName} \
                                 --entrypoint "/bin/sh" \
+                                v "$(pwd):/terraform" \
                                 hashicorp/terraform:1.4.0 \
-                                -c "sleep infinity"
+                                -c "cd /terraform && sleep infinity"
                             """
 
 
