@@ -92,7 +92,8 @@ pipeline {
                                 -e AWS_REGION=${env.AWS_REGION} \
                                 -e OKTA_API_TOKEN=${env.OKTA_API_TOKEN} \
                                 --name ${containerName} \
-                                hashicorp/terraform:1.4.0
+                                hashicorp/terraform:1.4.0 \
+                                tail -f /dev/null
                             """
 
 
