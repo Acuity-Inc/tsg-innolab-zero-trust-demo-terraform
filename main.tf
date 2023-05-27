@@ -22,4 +22,5 @@ provider "okta" {
   org_name  = "trial-6669138"
   base_url  = "okta.com"
   api_token = var.okta_api_token
+  
 }

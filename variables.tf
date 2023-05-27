@@ -30,38 +30,10 @@ variable "aws_secret_key" {
   type        = string
 }
 
-variable "okta_org_name" {
-  description = "Okta organization name"
-  type        = string
-}
-
-variable "okta_base_url" {
-  description = "Okta base URL"
-  type        = string
-  default     = "okta.com"
-}
 
 variable "okta_api_token" {
   description = "Okta API token"
   type        = string
 }
 
-variable "okta_user_first_name" {
-  description = "First name for the Okta user"
-  type        = string
-}
 
-variable "okta_user_last_name" {
-  description = "Last name for the Okta user"
-  type        = string
-}
-
-variable "okta_user_login" {
-  description = "Login for the Okta user"
-  type        = string
-}
-
-variable "okta_user_email" {
-  description = "Email for the Okta user"
-  type        = string
-}
