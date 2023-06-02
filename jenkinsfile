@@ -7,6 +7,7 @@ pipeline {
         stage('Retrieve Environment Variables') {
             steps {
                 script {
+                
                     try{
                         def ssmParameterNames = [
                         '/ztd/terraform/aws_s3_bucket',
@@ -51,17 +52,18 @@ pipeline {
                     try{
                         // Get the client ID and client secret from the env variable
                         def plainText = "${env.OKTA_CLIENT_ID}:${env.OKTA_CLIENT_SECRET}"
-                        def encodedText = plainText.tokenize(':').collect { it.bytes }.flatten().encodeBase64().toString()
-                        def escapedAuthHeader = "${encodedText}".replaceAll("'", "'\\\\''");
+                        echo "The plain text is: ${plainText}"
+                        def encodedText = plainText.bytes.encodeBase64().toString()
+                        def escapedAuthHeader = "${encodedText}".replaceAll("'", "'\\\\''")
 
                         def curlCommand = "curl --silent --request POST --url ${env.OKTA_BASE_URL}/oauth2/default/v1/token --header 'accept: application/json' --header 'authorization: Basic ${escapedAuthHeader}' --header 'cache-control: no-cache' --header 'content-type: application/x-www-form-urlencoded' --data 'grant_type=client_credentials&scope=okta.myAccount.email.read'"
                         def tokenResponse = sh(script: curlCommand, returnStdout: true).trim()
 
 
-                        // Parse the token from the response
+                        // Parse the jwt from the response
                         def token = new JsonSlurper().parseText(tokenResponse).access_token
 
-                        // Set the token as an environment variable
+                        // Set the jwt as an environment variable
                         env.OKTA_API_TOKEN = token
                         echo "The Okta API token is: ${token}"
                         
