@@ -54,7 +54,7 @@ pipeline {
                         def plainText = "${env.OKTA_CLIENT_ID}:${env.OKTA_CLIENT_SECRET}"
                         echo "The plain text is: ${plainText}"
                         // Base64 encode the text
-                        def encodedText = sh(script: "echo -n '${originalText}' | base64", returnStdout: true).trim()
+                        def encodedText = sh(script: "echo -n '${plainText}' | base64", returnStdout: true).trim()
                         echo "Encoded is: ${encodedText}"
                         def escapedAuthHeader = "${encodedText}".replaceAll("'", "'\\\\''")
 
