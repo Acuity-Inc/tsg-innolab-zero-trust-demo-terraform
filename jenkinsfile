@@ -58,9 +58,11 @@ pipeline {
                         echo "Encoded is: ${encodedText}"
                         // def escapedAuthHeader = "${encodedText}".replaceAll("'", "'\\\\''")
 
-                        def curlCommand = '''curl --silent --request POST --url ${env.OKTA_BASE_URL}/oauth2/default/v1/token --header 'accept: application/json' --header 'authorization: Basic ${encodedText}' --header 'cache-control: no-cache' --header 'content-type: application/x-www-form-urlencoded' --data 'grant_type=client_credentials&scope=okta.myAccount.email.read\''''
+                        def curlCommand = """curl --silent --request POST --url ${env.OKTA_BASE_URL}/oauth2/default/v1/token --header 'accept: application/json' --header 'authorization: Basic ${encodedText}' --header 'cache-control: no-cache' --header 'content-type: application/x-www-form-urlencoded' --data 'grant_type=client_credentials&scope=okta.myAccount.email.read'"""
 
                         def tokenResponse = sh(script: curlCommand, returnStdout: true).trim()
+
+
 
 
                         // Parse the jwt from the response
