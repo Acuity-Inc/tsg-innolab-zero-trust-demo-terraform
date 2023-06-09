@@ -25,7 +25,7 @@ provider "okta" {
   
 }
 
-resource "okta_user" "example" {
+resource "okta_user" "user" {
   first_name         = "John"
   last_name          = "Smith"
   login              = "john.smith@example.com"
@@ -58,3 +58,5 @@ resource "okta_user" "example" {
   user_type          = "Employee"
   zip_code           = "11111"
 }
+
+
