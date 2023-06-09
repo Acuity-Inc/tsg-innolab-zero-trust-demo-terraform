@@ -46,7 +46,7 @@ node {
             echo "Encoded is: ${encodedText}"
             // def escapedAuthHeader = "${encodedText}".replaceAll("'", "'\\\\''")
 
-            def tokenResponse = sh(returnStdOut: true, script: '''#!/bin/bash -el
+            def tokenResponse = sh(returnStdout: true, script: '''#!/bin/bash -el
                 tokenResponse=`curl --silent \
                 --request POST \
                 --url $OKTA_BASE_URL/oauth2/default/v1/token \
