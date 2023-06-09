@@ -46,18 +46,16 @@ node {
             echo "Encoded is: ${encodedText}"
             // def escapedAuthHeader = "${encodedText}".replaceAll("'", "'\\\\''")
 
-            def curlCommand = """
-                curl --silent \
+            sh '''#!/bin/bash -el
+                accessToken=`curl --silent \
                 --request POST \
                 --url ${env.OKTA_BASE_URL}/oauth2/default/v1/token \
                 --header 'accept: application/json' \
                 --header 'authorization: Basic ${encodedText}' \
                 --header 'cache-control: no-cache' \
                 --header 'content-type: application/x-www-form-urlencoded' \
-                --data 'grant_type=client_credentials&scope=okta.myAccount.email.read'
-            """
-
-            def tokenResponse = sh(script: curlCommand, returnStdout: true).trim()
+                --data 'grant_type=client_credentials&scope=okta.myAccount.email.read'`
+            '''
 
             // Parse the jwt from the response
             def token = new JsonSlurper().parseText(tokenResponse).access_token
