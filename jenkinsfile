@@ -47,7 +47,7 @@ node {
             // def escapedAuthHeader = "${encodedText}".replaceAll("'", "'\\\\''")
 
             sh '''#!/bin/bash -el
-                accessToken=`curl --silent \
+                tokenResponse=`curl --silent \
                 --request POST \
                 --url $OKTA_BASE_URL/oauth2/default/v1/token \
                 --header 'accept: application/json' \
