@@ -47,14 +47,14 @@ node {
             // def escapedAuthHeader = "${encodedText}".replaceAll("'", "'\\\\''")
 
             def tokenResponse = sh(returnStdout: true, script: '''#!/bin/bash -el
-                tokenResponse=`curl --silent \
+                curl --silent \
                 --request POST \
                 --url $OKTA_BASE_URL/oauth2/default/v1/token \
                 --header 'accept: application/json' \
                 --header 'authorization: Basic $encodedText' \
                 --header 'cache-control: no-cache' \
                 --header 'content-type: application/x-www-form-urlencoded' \
-                --data 'grant_type=client_credentials&scope=okta.myAccount.email.read'`
+                --data 'grant_type=client_credentials&scope=okta.myAccount.email.read'
             ''')
 
             // Parse the jwt from the response
