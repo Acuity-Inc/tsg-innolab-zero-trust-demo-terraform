@@ -41,8 +41,9 @@ node {
             // Get the client ID and client secret from the env variable
             def plainText = "${env.OKTA_CLIENT_ID}:${env.OKTA_CLIENT_SECRET}"
             echo "The plain text is: ${plainText}"
-            // Base64 encode the text
-            def encodedText = sh(script: "echo -n '${plainText}' | base64", returnStdout: true).trim()
+            // Base64 encode the text accounting for a long response split on multiple lines
+            def encodedText = sh(script: "echo -n '${plainText}' | base64 | tr -d '\n'", returnStdout: true).trim()
+
             echo "Encoded is: ${encodedText}"
             // def escapedAuthHeader = "${encodedText}".replaceAll("'", "'\\\\''")
 
