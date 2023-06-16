@@ -11,7 +11,10 @@ node {
                 '/ztd/terraform/okta_authorization_header',
                 '/ztd/terraform/okta_base_url',
                 '/ztd/terraform/okta_client_id',
-                '/ztd/terraform/okta_client_secret'
+                '/ztd/terraform/okta_client_secret',
+                '/ztd/terraform/okta_api_token',
+
+
             ]
 
             def ssmCommand = 'aws ssm get-parameters --names ' +
@@ -33,40 +36,6 @@ node {
             }
         } catch (Exception e) {
             echo "Error occurred while retrieving environment variables: ${e.message}"
-        }
-    }
-
-    stage('Retrieve Okta API Token') {
-        try {
-            // Get the client ID and client secret from the env variable
-            def plainText = "${env.OKTA_CLIENT_ID}:${env.OKTA_CLIENT_SECRET}"
-            echo "The plain text is: ${plainText}"
-            // Base64 encode the text accounting for a long response split on multiple lines
-            def encodedText = sh(script: "echo -n '${plainText}' | base64 | tr -d '\n'", returnStdout: true).trim()
-
-            echo "Encoded is: ${encodedText}"
-            // def escapedAuthHeader = "${encodedText}".replaceAll("'", "'\\\\''")
-
-            def tokenResponse = sh(returnStdout: true, script: """#!/bin/bash -el
-                curl -v --http1.1 \
-                --request POST \
-                --url ${OKTA_BASE_URL}/oauth2/default/v1/token \
-                --header 'accept: application/json' \
-                --header 'authorization: Basic ${encodedText}' \
-                --header 'cache-control: no-cache' \
-                --header 'content-type: application/x-www-form-urlencoded' \
-                --data 'grant_type=client_credentials&scope=okta.myAccount.email.read'
-            """)
-            echo "The response is: ${tokenResponse}"
-
-            // Parse the jwt from the response
-            def token = new JsonSlurper().parseText(tokenResponse).access_token
-
-            // Set the jwt as an environment variable
-            env.OKTA_API_TOKEN = token
-            echo "The Okta API token is: ${token}"
-        } catch (Exception e) {
-            echo "Error occurred while retrieving Okta API token: ${e.message}"
         }
     }
 
