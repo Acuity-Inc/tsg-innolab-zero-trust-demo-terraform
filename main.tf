@@ -25,8 +25,25 @@ provider "okta" {
   
 }
 
+resource "okta_user_type" "agency_employee2" {
+  name = "Agency Employee2"
+  display_name = "Agency Employee2"
+  description = "Agency Employee2"
 
-resource "okta_user" "user" {
+  
+}
+
+resource "okta_user_schema_property" "highest_security_clearance" {
+  type = "string"
+  title = "Highest Security Clearance"
+  description = "Highest Security Clearance"
+  user_type = okta_user_type.agency_employee2
+}
+
+
+resource "okta_user" "user1" {
+  # user_type_id = okta_user_type.AgencyEmployee.id
+  user_type = okta_user_type.AgencyEmployee
   first_name         = "John"
   last_name          = "Smith"
   login              = "john.smith@example.com"
@@ -56,7 +73,6 @@ resource "okta_user" "user" {
   street_address     = "5678 Testing Ave."
   timezone           = "America/New_York"
   title              = "Director"
-  user_type          = "Employee"
   zip_code           = "11111"
 }
 
