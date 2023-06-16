@@ -1,10 +1,7 @@
 import groovy.json.JsonSlurper
 
 node {
-    stage('Check Files') {
-        sh 'ls -la'  // List all files and directories in the workspace
-        sh 'cat main.tf'  // Display the contents of README.md file
-    }
+    
     
     stage('Retrieve Environment Variables') {
         try {
