@@ -105,7 +105,7 @@ node {
             // Define the Docker exec command
             def dockerExecCommand = """
                 docker exec ${env.TERRAFORM_CONTAINER_ID} \
-                sh -c "cd terraform && ls && cat main.tf && terraform plan -var 'aws_region=${env.AWS_REGION}' -var 's3_bucket=${env.AWS_S3_BUCKET}' -var 's3_key=${env.AWS_S3_KEY}' -var 's3_region=${env.AWS_S3_REGION}' -var 'okta_api_token=${env.OKTA_API_TOKEN}' -out=tfplan"
+                sh -c "cd terraform && ls && terraform plan -var 'aws_region=${env.AWS_REGION}' -var 's3_bucket=${env.AWS_S3_BUCKET}' -var 's3_key=${env.AWS_S3_KEY}' -var 's3_region=${env.AWS_S3_REGION}' -var 'okta_api_token=${env.OKTA_API_TOKEN}' -out=tfplan"
             """
 
             // Execute the command in the Docker container
