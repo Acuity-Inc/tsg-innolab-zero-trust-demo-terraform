@@ -39,6 +39,35 @@ node {
         }
     }
 
+    stage('Retrieve Okta API Token') {
+        try {
+            // Get the client ID and client secret from the env variable
+           
+            // def escapedAuthHeader = "${encodedText}".replaceAll("'", "'\\\\''")
+
+            def tokenResponse = sh(returnStdout: true, script: """#!/bin/bash -el
+                curl -v --http1.1 \
+                --request POST \
+                --url ${OKTA_BASE_URL}/oauth2/default/v1/token \
+                --header 'accept: application/json' \
+                --header 'authorization: Basic ${OKTA_API_TOKEN}' \
+                --header 'cache-control: no-cache' \
+                --header 'content-type: application/x-www-form-urlencoded' \
+                --data 'grant_type=client_credentials&scope=okta.myAccount.email.read'
+            """)
+            echo "The response is: ${tokenResponse}"
+
+            // Parse the jwt from the response
+            def token = new JsonSlurper().parseText(tokenResponse).access_token
+
+            // Set the jwt as an environment variable
+            env.OKTA_API_TOKEN = token
+            echo "The Okta API token is: ${token}"
+        } catch (Exception e) {
+            echo "Error occurred while retrieving Okta API token: ${e.message}"
+        }
+    }
+
     stage('Create Docker Container') {
         try {
             def containerName = 'terraform_container'
