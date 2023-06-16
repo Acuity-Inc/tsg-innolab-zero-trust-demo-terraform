@@ -11,7 +11,11 @@ terraform {
     }
   }
 
-  backend "s3" {}
+  backend "s3" {
+    bucket = var.s3_bucket
+    key    = var.s3_key
+    region = var.aws_region
+  }
 }
 
 provider "aws" {
@@ -37,13 +41,13 @@ resource "okta_user_schema_property" "highest_security_clearance" {
   type = "string"
   title = "Highest Security Clearance"
   description = "Highest Security Clearance"
-  user_type = okta_user_type.agency_employee2
+  user_type = okta_user_type.agency_employee2.id
 }
 
 
 resource "okta_user" "user1" {
   # user_type_id = okta_user_type.AgencyEmployee.id
-  user_type = okta_user_type.AgencyEmployee
+  user_type = okta_user_type.agency_employee2.id
   first_name         = "John"
   last_name          = "Smith"
   login              = "john.smith@example.com"
