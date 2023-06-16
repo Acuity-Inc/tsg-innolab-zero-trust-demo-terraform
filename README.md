@@ -1,6 +1,6 @@
 # TSG Innolab ZTD Terraform
 
-This project contains Terraform code to configure AWS and Okta resources..
+This project contains Terraform code to configure AWS and Okta resources.
 
 ## Project Structure
 
