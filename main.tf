@@ -158,6 +158,7 @@ resource "okta_app_oauth" "zerotrustdemo-app" {
   redirect_uris  = ["http://localhost:3000/login/callback"]
 }
 
+/*
 data "okta_user_profile_mapping_source" "user" {}
 
 resource "okta_profile_mapping" "user-claims-mappings" {
@@ -180,3 +181,4 @@ resource "okta_profile_mapping" "user-claims-mappings" {
     expression = "user.canMakeDecisions"
   }
 }
+*/
