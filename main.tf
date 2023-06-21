@@ -40,6 +40,7 @@ resource "okta_user_type" "agency_employee2" {
 
 resource "okta_user_schema_property" "highest_security_clearance" {
   type = "string"
+  index = "highestSecurityClarance"
   title = "Highest Security Clearance"
   description = "Highest Security Clearance"
   user_type = okta_user_type.agency_employee2.id
