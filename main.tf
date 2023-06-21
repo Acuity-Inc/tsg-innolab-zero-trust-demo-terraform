@@ -61,7 +61,8 @@ resource "okta_user_schema_property" "highest_security_clearance" {
       title = "Top Secret"
   }
 
-  one_of {
+  oarance"
+  user_type =ne_of {
     const = "poly"
     title = "TS/Poly"
   }
@@ -75,7 +76,7 @@ resource "okta_user_schema_property" "can_make_decisions" {
   required = true
 }
 
-resource "okta_user_schema_property" "can_searc" {
+resource "okta_user_schema_property" "can_search" {
   type = "boolean"
   index = "canSearch"
   title = "Can Search?"
@@ -156,4 +157,27 @@ resource "okta_app_oauth" "zerotrustdemo-app" {
   grant_types    = ["authorization_code"]
   implicit_assignment  = true
   redirect_uris  = ["http://localhost:3000/login/callback"]
+}
+
+data "okta_user_profile_mapping_source" "AgencyEmployee" {}
+
+resource "okta_profile_mapping" "user-claims-mappings" {
+  source_id          = okta_user_type.agency_employee2.id
+  target_id          = "${data.okta_user_profile_mapping_source.AgencyEmployee.id}"
+  delete_when_absent = true
+
+  mappings {
+    id         = "highestSecurityClearance"
+    expression = "user.highestSecurityClearance"
+  }
+
+  mappings {
+    id         = "canSearch"
+    expression = "user.canSearch"
+  }
+
+  mappings {
+    id         = "canMakeDecisions"
+    expression = "user.canMakeDecisions"
+  }
 }
