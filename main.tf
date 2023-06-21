@@ -158,11 +158,11 @@ resource "okta_app_oauth" "zerotrustdemo-app" {
   redirect_uris  = ["http://localhost:3000/login/callback"]
 }
 
-data "okta_user_profile_mapping_source" "AgencyEmployee" {}
+data "okta_user_profile_mapping_source" "user" {}
 
 resource "okta_profile_mapping" "user-claims-mappings" {
   source_id          = okta_user_type.agency_employee2.id
-  target_id          = "${data.okta_user_profile_mapping_source.AgencyEmployee.id}"
+  target_id          = "${data.okta_user_profile_mapping_source.user.id}"
   delete_when_absent = true
 
   mappings {
