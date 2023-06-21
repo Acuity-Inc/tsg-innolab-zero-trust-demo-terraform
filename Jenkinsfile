@@ -32,89 +32,88 @@ node {
 
 	    // Assign the retrieved values to Jenkins environment variables
 	    ssmParameterNames.each { parameterName ->
-		def parameterValue = ssmJson.Parameters.find { it.Name == parameterName }?.Value ?: ''
-		// Remove '/ztd/terraform/' prefix and convert to uppercase
-		def envVariableName = parameterName.replace('/ztd/terraform/', '').toUpperCase()
-		env."${envVariableName}" = parameterValue
-		// Log the value of '/ztd/terraform/aws_region'
-		echo "The value of ${envVariableName} is: ${parameterValue}"
+      def parameterValue = ssmJson.Parameters.find { it.Name == parameterName }?.Value ?: ''
+      // Remove '/ztd/terraform/' prefix and convert to uppercase
+      def envVariableName = parameterName.replace('/ztd/terraform/', '').toUpperCase()
+      env."${envVariableName}" = parameterValue
+      // Log the value of '/ztd/terraform/aws_region'
+      echo "The value of ${envVariableName} is: ${parameterValue}"
 	    }
     }
     
+    try {
+      stage('Create Docker Container') {
+          def containerName = 'terraform_container'
+          def existingContainerId = sh(script: "docker ps -aq -f name=${containerName}", returnStdout: true)
 
-    stage('Create Docker Container') {
-        def containerName = 'terraform_container'
-        def existingContainerId = sh(script: "docker ps -aq -f name=${containerName}", returnStdout: true)
+          if (existingContainerId) {
+              echo "Container with name ${containerName} already exists with ID ${existingContainerId}"
+              env.TERRAFORM_CONTAINER_ID = existingContainerId
+              sh "docker logs ${existingContainerId}"
+          } else {
+              echo "Container with name ${containerName} does not exist. Creating it..."
 
-        if (existingContainerId) {
-            echo "Container with name ${containerName} already exists with ID ${existingContainerId}"
-            env.TERRAFORM_CONTAINER_ID = existingContainerId
-            sh "docker logs ${existingContainerId}"
-        } else {
-            echo "Container with name ${containerName} does not exist. Creating it..."
+              def dockerRunCommand = """
+                  docker run -d \
+                  -e AWS_S3_BUCKET=${env.AWS_S3_BUCKET} \
+                  -e AWS_S3_KEY=${env.AWS_S3_KEY} \
+                  -e AWS_S3_REGION=${env.AWS_S3_REGION} \
+                  -e AWS_REGION=${env.AWS_REGION} \
+                  -e OKTA_API_TOKEN=${env.OKTA_API_TOKEN} \
+                  --name ${containerName} \
+                  --entrypoint "/bin/sh" \
+                  -v "${env.WORKSPACE}:/terraform" \
+                  hashicorp/terraform:1.4.0 \
+                  -c "cd terraform && sleep infinity"
+              """
 
-            def dockerRunCommand = """
-                docker run -d \
-                -e AWS_S3_BUCKET=${env.AWS_S3_BUCKET} \
-                -e AWS_S3_KEY=${env.AWS_S3_KEY} \
-                -e AWS_S3_REGION=${env.AWS_S3_REGION} \
-                -e AWS_REGION=${env.AWS_REGION} \
-                -e OKTA_API_TOKEN=${env.OKTA_API_TOKEN} \
-                --name ${containerName} \
-                --entrypoint "/bin/sh" \
-                -v "${env.WORKSPACE}:/terraform" \
-                hashicorp/terraform:1.4.0 \
-                -c "cd terraform && sleep infinity"
-            """
+              // Run the Docker container and get the container ID
+              def containerId = sh(script: dockerRunCommand, returnStdout: true).trim()
+              sh "docker logs ${containerId}"
+              echo "Started Docker container with ID: ${containerId}"
+              // Check the status of the Docker container
+              sh 'docker ps -a'
 
-            // Run the Docker container and get the container ID
-            def containerId = sh(script: dockerRunCommand, returnStdout: true).trim()
-            sh "docker logs ${containerId}"
-            echo "Started Docker container with ID: ${containerId}"
-            // Check the status of the Docker container
-            sh 'docker ps -a'
+              // Save the container ID for later stages
+              env.TERRAFORM_CONTAINER_ID = containerId
+          }
+      }
 
-            // Save the container ID for later stages
-            env.TERRAFORM_CONTAINER_ID = containerId
-        }
-    }
+      stage('Terraform Init') {
+          sh 'docker ps -a'
+          echo(env.TERRAFORM_CONTAINER_ID)
+          // Define the Docker exec command
+          def dockerExecCommand = """
+              docker exec ${env.TERRAFORM_CONTAINER_ID} \
+              sh -c "cd terraform && terraform init -backend-config='bucket=${env.AWS_S3_BUCKET}' -backend-config='key=${env.AWS_S3_KEY}' -backend-config='region=${env.AWS_S3_REGION}'"
+          """
 
-    stage('Terraform Init') {
-        sh 'docker ps -a'
-        echo(env.TERRAFORM_CONTAINER_ID)
-        // Define the Docker exec command
-        def dockerExecCommand = """
-            docker exec ${env.TERRAFORM_CONTAINER_ID} \
-            sh -c "cd terraform && terraform init -backend-config='bucket=${env.AWS_S3_BUCKET}' -backend-config='key=${env.AWS_S3_KEY}' -backend-config='region=${env.AWS_S3_REGION}'"
-        """
+          // Execute the command in the Docker container
+          sh(script: dockerExecCommand)
+      }
 
-        // Execute the command in the Docker container
-        sh(script: dockerExecCommand)
-    }
+      stage('Terraform Plan') {
+          // Define the Docker exec command
+          def dockerExecCommand = """
+              docker exec ${env.TERRAFORM_CONTAINER_ID} \
+              sh -c "cd terraform && ls && terraform plan -var 'aws_region=${env.AWS_REGION}' -var 's3_bucket=${env.AWS_S3_BUCKET}' -var 's3_key=${env.AWS_S3_KEY}' -var 's3_region=${env.AWS_S3_REGION}' -var 'okta_api_token=${env.OKTA_API_TOKEN}' -out=tfplan"
+          """
 
-    stage('Terraform Plan') {
-        // Define the Docker exec command
-        def dockerExecCommand = """
-            docker exec ${env.TERRAFORM_CONTAINER_ID} \
-            sh -c "cd terraform && ls && terraform plan -var 'aws_region=${env.AWS_REGION}' -var 's3_bucket=${env.AWS_S3_BUCKET}' -var 's3_key=${env.AWS_S3_KEY}' -var 's3_region=${env.AWS_S3_REGION}' -var 'okta_api_token=${env.OKTA_API_TOKEN}' -out=tfplan"
-        """
+          // Execute the command in the Docker container
+          sh(script: dockerExecCommand)
+      }
 
-        // Execute the command in the Docker container
-        sh(script: dockerExecCommand)
-    }
+      stage('Terraform Apply') {
+          // Define the Docker exec command
+          def dockerExecCommand = """
+              docker exec ${env.TERRAFORM_CONTAINER_ID} \
+              sh -c "cd terraform && terraform apply -auto-approve tfplan"
+          """
 
-    stage('Terraform Apply') {
-        // Define the Docker exec command
-        def dockerExecCommand = """
-            docker exec ${env.TERRAFORM_CONTAINER_ID} \
-            sh -c "cd terraform && terraform apply -auto-approve tfplan"
-        """
-
-        // Execute the command in the Docker container
-        sh(script: dockerExecCommand)
-    }
-
-    stage('Clean Up Docker Container') {
+          // Execute the command in the Docker container
+          sh(script: dockerExecCommand)
+      }
+    } finally {
         // If container is not null
         if (env.TERRAFORM_CONTAINER_ID) {
             // Stop the Docker container
