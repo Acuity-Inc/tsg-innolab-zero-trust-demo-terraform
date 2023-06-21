@@ -85,7 +85,7 @@ resource "okta_user_schema_property" "can_search" {
 
 resource "okta_user" "user1" {
   # user_type_id = okta_user_type.AgencyEmployee.id
-  user_type = okta_user_type.agency_employee2.id
+  user_type = ${okta_user_type.agency_employee2.id}
   first_name         = "John"
   last_name          = "Smith"
   login              = "john.smith@example.com"
