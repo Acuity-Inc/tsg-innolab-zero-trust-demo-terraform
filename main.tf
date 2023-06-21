@@ -150,4 +150,9 @@ resource "okta_user" "user2" {
   zip_code           = "11111"
 }
 
-
+resource "okta_app_oauth" "zerotrustdemo-app" {
+  label          = "zerotrustdemo"
+  type           = "browser"
+  grant_types    = ["authorization_code"]
+  implicit_assignment  = true
+}
