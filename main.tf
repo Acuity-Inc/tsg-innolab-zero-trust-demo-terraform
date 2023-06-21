@@ -31,7 +31,8 @@ provider "okta" {
 }
 
 resource "okta_user_type" "agency_employee2" {
-  name = "Agency Employee2"
+  name = "AgencyEmployee2"
+  display_name = "Agency Employee 2"
   display_name = "Agency Employee2"
   description = "Agency Employee2"
 
