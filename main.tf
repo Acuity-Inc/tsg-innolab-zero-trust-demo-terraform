@@ -115,11 +115,11 @@ resource "okta_user" "user1" {
   timezone           = "America/New_York"
   title              = "Director"
   zip_code           = "11111"
-  custom_profile_attributes = jsonencode({
-    canSearch = false
-    canMakeDecisions = false
-    highestSecurityClearance = "ts"
-  })
+  # custom_profile_attributes = jsonencode({
+  #   canSearch = false
+  #   canMakeDecisions = false
+  #   highestSecurityClearance = "ts"
+  # })
 }
 
 resource "okta_user" "user2" {
