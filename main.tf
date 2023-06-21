@@ -194,6 +194,7 @@ resource "okta_app_oauth" "nola_test"{
   consent_method = "REQUIRED"
   post_logout_redirect_uris = ["http://localhost:3000/"]
   
+  
   // Federation Broker Mode
   implicit_assignment = true
   
