@@ -1,7 +1,11 @@
 import groovy.json.JsonSlurper
 
 node {
-    
+    stage('Checkout Code') {
+      scm_vars = checkout scm
+      env.GIT_COMMIT = scm_vars.GIT_COMMIT
+      env.GIT_PREVIOUS_SUCCESSFUL_COMMIT = scm_vars.GIT_PREVIOUS_SUCCESSFUL_COMMIT
+    }
     
     stage('Retrieve Environment Variables') {
         try {
