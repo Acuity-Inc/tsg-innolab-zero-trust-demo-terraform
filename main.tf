@@ -182,3 +182,25 @@ resource "okta_profile_mapping" "user-claims-mappings" {
   }
 }
 */
+
+
+/* Applications*/
+resource "okta_app_oauth" "nola_test"{
+  label = "nola-test-2"
+  type = "browser"
+  grant_types = ["authorization_code"]
+  redirect_uris = ["http://localhost:3000/login/callback"]
+  pkce_required = true
+  consent_method = "REQUIRED"
+  post_logout_redirect_uris = ["http://localhost:3000/"]
+  
+  // Federation Broker Mode
+  implicit_assignment = true
+  
+
+  
+
+  
+
+
+}
