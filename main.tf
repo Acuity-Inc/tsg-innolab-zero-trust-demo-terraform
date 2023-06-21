@@ -46,20 +46,20 @@ resource "okta_user_schema_property" "highest_security_clearance" {
   user_type = okta_user_type.agency_employee2.id
   one_of = [
     {
-      "const" = "none",
-      "title" = "None",
+      const = "none"
+      title = "None"
     },
     {
-      "const" = "publictrust",
-      "title" = "Public Trust",
+      const = "publictrust"
+      title = "Public Trust"
     },
     {
-      "const" = "ts",
-      "title" = "Top Secret",
+      const = "ts"
+      title = "Top Secret"
     },
     {
-      "const" = "poly",
-      "title" = "TS/Poly",
+      const = "poly"
+      title = "TS/Poly"
     }
   ]
 }
