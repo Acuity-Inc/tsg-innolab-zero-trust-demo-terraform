@@ -115,9 +115,7 @@ resource "okta_user" "user1" {
   timezone           = "America/New_York"
   title              = "Director"
   zip_code           = "11111"
-  can_search         = false
-  can_make_decisions = false
-  highestSecurityClerance = "ts"
+  custom_profile_attributes = {"can_search": false, "can_make_decisions": false, "highestSecurityClearance": "ts"}
 }
 
 resource "okta_user" "user2" {
