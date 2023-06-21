@@ -40,12 +40,29 @@ resource "okta_user_type" "agency_employee2" {
 
 resource "okta_user_schema_property" "highest_security_clearance" {
   type = "string"
-  index = "highestSecurityClarance"
+  index = "highestSecurityClearance"
   title = "Highest Security Clearance"
   description = "Highest Security Clearance"
   user_type = okta_user_type.agency_employee2.id
+  one_of = [
+    {
+      "const" = "none",
+      "title" = "None",
+    },
+    {
+      "const" = "publictrust",
+      "title" = "Public Trust",
+    },
+    {
+      "const" = "ts",
+      "title" = "Top Secret",
+    },
+    {
+      "const" = "poly",
+      "title" = "TS/Poly",
+    }
+  ]
 }
-
 
 resource "okta_user" "user1" {
   # user_type_id = okta_user_type.AgencyEmployee.id
