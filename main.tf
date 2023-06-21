@@ -84,7 +84,6 @@ resource "okta_user_schema_property" "can_search" {
 }
 
 resource "okta_user" "user1" {
-  # user_type_id = okta_user_type.AgencyEmployee.id
   user_type          = "AgencyEmployee2"
   first_name         = "John"
   last_name          = "Smith"
@@ -116,6 +115,11 @@ resource "okta_user" "user1" {
   timezone           = "America/New_York"
   title              = "Director"
   zip_code           = "11111"
+  custom_profile_attributes = jsonencode({
+    canSearch = false
+    canMakeDecisions = false
+    highestSecurityClearance = "ts"
+  })
 }
 
 resource "okta_user" "user2" {
