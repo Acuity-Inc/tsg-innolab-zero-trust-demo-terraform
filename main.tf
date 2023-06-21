@@ -61,8 +61,7 @@ resource "okta_user_schema_property" "highest_security_clearance" {
       title = "Top Secret"
   }
 
-  oarance"
-  user_type =ne_of {
+  one_of {
     const = "poly"
     title = "TS/Poly"
   }
