@@ -116,8 +116,8 @@ resource "okta_user" "user1" {
   title              = "Director"
   zip_code           = "11111"
   custom_profile_attributes = jsonencode({
-    can_search = false
-    can_make_decisions = false
+    canSearch = false
+    canMakeDecisions = false
     highestSecurityClearance = "ts"
   })
 }
