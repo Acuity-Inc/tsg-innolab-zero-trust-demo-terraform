@@ -155,4 +155,5 @@ resource "okta_app_oauth" "zerotrustdemo-app" {
   type           = "browser"
   grant_types    = ["authorization_code"]
   implicit_assignment  = true
+  redirect_uris  = ["http://localhost:3000/login/callback"]
 }
