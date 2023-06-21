@@ -67,6 +67,22 @@ resource "okta_user_schema_property" "highest_security_clearance" {
   }
 }
 
+resource "okta_user_schema_property" "can_make_decisions" {
+  type = "boolean"
+  index = "canMakeDecisions"
+  title = "Can Make Decisions?"
+  user_type = okta_user_type.agency_employee2.id
+  required = true
+}
+
+resource "okta_user_schema_property" "can_searc" {
+  type = "boolean"
+  index = "canSearch"
+  title = "Can Search?"
+  user_type = okta_user_type.agency_employee2.id
+  required = true
+}
+
 resource "okta_user" "user1" {
   # user_type_id = okta_user_type.AgencyEmployee.id
   user_type = okta_user_type.agency_employee2.id
