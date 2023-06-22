@@ -74,6 +74,14 @@ resource "okta_user_schema_property" "can_make_decisions" {
   required = true
 }
 
+resource "okta_user_schema_property" "can_make_decisions_app" {
+  type = "boolean"
+  index = "canMakeDecisions"
+  title = "Can Make Decisions?"
+  user_type = okta_app_oauth.zerotrustdemo-app.id
+  required = true
+}
+
 resource "okta_user_schema_property" "can_search" {
   type = "boolean"
   index = "canSearch"
@@ -163,9 +171,7 @@ resource "okta_app_oauth" "zerotrustdemo-app" {
   redirect_uris  = ["http://localhost:3000/login/callback"]
 }
 
-data "okta_user_profile_mapping_source" "user" {}
-
-resource "okta_profile_mapping" "user-claims-mappings" {
+/*resource "okta_profile_mapping" "user-claims-mappings" {
   source_id          = okta_user_type.agency_employee.id
   target_id          = okta_app_oauth.zerotrustdemo-app.id
   delete_when_absent = true
@@ -184,4 +190,4 @@ resource "okta_profile_mapping" "user-claims-mappings" {
     id         = "canMakeDecisions"
     expression = "user.canMakeDecisions"
   }
-}
+}*/
