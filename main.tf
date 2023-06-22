@@ -74,14 +74,6 @@ resource "okta_user_schema_property" "can_make_decisions" {
   required = true
 }
 
-resource "okta_user_schema_property" "can_make_decisions_app" {
-  type = "boolean"
-  index = "canMakeDecisions"
-  title = "Can Make Decisions?"
-  user_type = okta_app_oauth.zerotrustdemo-app.client_id
-  required = true
-}
-
 resource "okta_user_schema_property" "can_search" {
   type = "boolean"
   index = "canSearch"
