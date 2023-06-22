@@ -44,9 +44,6 @@ resource "okta_user_schema_property" "highest_security_clearance" {
   user_type = okta_user_type.agency_employee.id
   required = true
   enum = ["none", "publictrust", "ts", "poly"]
-  depends_on = [
-    okta_user_type.agency_employee
-  ]
 
   one_of {
       const = "none"
@@ -75,9 +72,6 @@ resource "okta_user_schema_property" "can_make_decisions" {
   title = "Can Make Decisions?"
   user_type = okta_user_type.agency_employee.id
   required = true
-  depends_on = [
-    okta_user_type.agency_employee
-  ]
 }
 
 resource "okta_user_schema_property" "can_search" {
@@ -86,9 +80,6 @@ resource "okta_user_schema_property" "can_search" {
   title = "Can Search?"
   user_type = okta_user_type.agency_employee.id
   required = true
-  depends_on = [
-    okta_user_type.agency_employee
-  ]
 }
 
 /*
@@ -172,7 +163,6 @@ resource "okta_app_oauth" "zerotrustdemo-app" {
   redirect_uris  = ["http://localhost:3000/login/callback"]
 }
 
-/*
 data "okta_user_profile_mapping_source" "user" {}
 
 resource "okta_profile_mapping" "user-claims-mappings" {
@@ -195,4 +185,3 @@ resource "okta_profile_mapping" "user-claims-mappings" {
     expression = "user.canMakeDecisions"
   }
 }
-*/
