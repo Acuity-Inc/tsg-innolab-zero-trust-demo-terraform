@@ -44,6 +44,10 @@ resource "okta_user_schema_property" "highest_security_clearance" {
   user_type = okta_user_type.agency_employee.id
   required = true
   enum = ["none", "publictrust", "ts", "poly"]
+  depends_on = [
+    okta_user_type.agency_employee
+  ]
+
   one_of {
       const = "none"
       title = "None"
@@ -71,6 +75,9 @@ resource "okta_user_schema_property" "can_make_decisions" {
   title = "Can Make Decisions?"
   user_type = okta_user_type.agency_employee.id
   required = true
+  depends_on = [
+    okta_user_type.agency_employee
+  ]
 }
 
 resource "okta_user_schema_property" "can_search" {
@@ -79,6 +86,9 @@ resource "okta_user_schema_property" "can_search" {
   title = "Can Search?"
   user_type = okta_user_type.agency_employee.id
   required = true
+  depends_on = [
+    okta_user_type.agency_employee
+  ]
 }
 
 /*
