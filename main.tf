@@ -82,7 +82,6 @@ resource "okta_user_schema_property" "can_search" {
   required = true
 }
 
-/*
 resource "okta_user" "test-user-1" {
   user_type          = "AgencyEmployee"
   first_name         = "Test"
