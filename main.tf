@@ -24,18 +24,16 @@ provider "aws" {
 }
 
 provider "okta" {
-  org_name  = "trial-6669138"
+  org_name  = "demo-zero-trust-prototype"
   base_url  = "okta.com"
   api_token = var.okta_api_token
   
 }
 
-resource "okta_user_type" "agency_employee2" {
-  name = "AgencyEmployee2"
-  display_name = "Agency Employee 2"
-  description = "Agency Employee2"
-
-  
+resource "okta_user_type" "agency_employee" {
+  name = "AgencyEmployee"
+  display_name = "Agency Employee"
+  description = "Agency Employee"
 }
 
 resource "okta_user_schema_property" "highest_security_clearance" {
@@ -83,6 +81,7 @@ resource "okta_user_schema_property" "can_search" {
   required = true
 }
 
+/*
 resource "okta_user" "user1" {
   user_type          = "AgencyEmployee2"
   first_name         = "John"
@@ -153,6 +152,7 @@ resource "okta_user" "user2" {
   user_type          = "Employee"
   zip_code           = "11111"
 }
+*/
 
 resource "okta_app_oauth" "zerotrustdemo-app" {
   label          = "zerotrustdemo"
