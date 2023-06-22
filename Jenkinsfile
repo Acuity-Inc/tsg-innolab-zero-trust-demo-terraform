@@ -83,7 +83,7 @@ node {
           // Define the Docker exec command
           def dockerExecCommand = """
               docker exec ${env.TERRAFORM_CONTAINER_ID} \
-              sh -c "cd terraform && terraform init -backend-config='bucket=${env.AWS_S3_BUCKET}' -backend-config='key=${env.AWS_S3_KEY}' -backend-config='region=${env.AWS_S3_REGION}'"
+              sh -c "cd terraform && terraform init -reconfigure -backend-config='bucket=${env.AWS_S3_BUCKET}' -backend-config='key=${env.AWS_S3_KEY}' -backend-config='region=${env.AWS_S3_REGION}'"
           """
 
           // Execute the command in the Docker container
