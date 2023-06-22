@@ -167,7 +167,7 @@ data "okta_user_profile_mapping_source" "user" {}
 
 resource "okta_profile_mapping" "user-claims-mappings" {
   source_id          = okta_user_type.agency_employee.id
-  target_id          = "${data.okta_user_profile_mapping_source.user.id}"
+  target_id          = okta_app_oauth.zerotrustdemo-app.id
   delete_when_absent = true
 
   mappings {
