@@ -83,77 +83,71 @@ resource "okta_user_schema_property" "can_search" {
 }
 
 /*
-resource "okta_user" "user1" {
+resource "okta_user" "test-user-1" {
   user_type          = "AgencyEmployee"
-  first_name         = "John"
-  last_name          = "Smith"
-  login              = "john.smith@example.com"
-  email              = "john.smith@example.com"
-  city               = "New York"
-  cost_center        = "10"
-  country_code       = "US"
-  department         = "IT"
-  display_name       = "Dr. John Smith"
-  division           = "Acquisitions"
-  employee_number    = "111111"
-  honorific_prefix   = "Dr."
-  honorific_suffix   = "Jr."
-  locale             = "en_US"
-  manager            = "Jimbo"
-  manager_id         = "222222"
-  middle_name        = "John"
-  mobile_phone       = "1112223333"
-  nick_name          = "Johnny"
-  organization       = "Testing Inc."
-  postal_address     = "1234 Testing St."
-  preferred_language = "en-us"
-  primary_phone      = "4445556666"
-  profile_url        = "https://www.example.com/profile"
-  second_email       = "john.smith.fun@example.com"
-  state              = "NY"
-  street_address     = "5678 Testing Ave."
-  timezone           = "America/New_York"
-  title              = "Director"
-  zip_code           = "11111"
+  first_name         = "Test"
+  last_name          = "User 1"
+  login              = "zerotrustprototype001@myacuity.com"
+  email              = "zerotrustprototype001@myacuity.com"
   # custom_profile_attributes = jsonencode({
   #   canSearch = false
+  #   canMakeDecisions = false
+  #   highestSecurityClearance = "publictrust"
+  # })
+}
+
+resource "okta_user" "test-user-2" {
+  user_type          = "AgencyEmployee"
+  first_name         = "Test"
+  last_name          = "User 2"
+  login              = "zerotrustprototype002@myacuity.com"
+  email              = "zerotrustprototype002@myacuity.com"
+  # custom_profile_attributes = jsonencode({
+  #   canSearch = true
+  #   canMakeDecisions = true
+  #   highestSecurityClearance = "poly"
+  # })
+}
+
+resource "okta_user" "test-user-3" {
+  user_type          = "AgencyEmployee"
+  first_name         = "Test"
+  last_name          = "User 3"
+  login              = "zerotrustprototype003@myacuity.com"
+  email              = "zerotrustprototype003@myacuity.com"
+  # custom_profile_attributes = jsonencode({
+  #   canSearch = true
   #   canMakeDecisions = false
   #   highestSecurityClearance = "ts"
   # })
 }
 
-resource "okta_user" "user2" {
-  first_name         = "Adam"
-  last_name          = "Bones"
-  login              = "adam.bones@example.com"
-  email              = "adam.bones@example.com"
-  city               = "Los Angeles"
-  cost_center        = "2"
-  country_code       = "US"
-  department         = "IT"
-  display_name       = "Adam Bones"
-  division           = "Acquisitions"
-  employee_number    = "111211"
-  locale             = "en_US"
-  manager            = "Jimbo"
-  manager_id         = "222222"
-  middle_name        = "John"
-  mobile_phone       = "1112223333"
-  nick_name          = "wow"
-  organization       = "Testing Inc."
-  postal_address     = "1234 Testing St."
-  preferred_language = "en-us"
-  primary_phone      = "4445556666"
-  profile_url        = "https://www.example.com/profile"
-  second_email       = "john.smith.fun@example.com"
-  state              = "NY"
-  street_address     = "5678 Testing Ave."
-  timezone           = "America/New_York"
-  title              = "Director"
-  user_type          = "Employee"
-  zip_code           = "11111"
+resource "okta_user" "test-user-4" {
+  user_type          = "AgencyEmployee"
+  first_name         = "Test"
+  last_name          = "User 4"
+  login              = "zerotrustprototype004@myacuity.com"
+  email              = "zerotrustprototype004@myacuity.com"
+  # custom_profile_attributes = jsonencode({
+  #   canSearch = false
+  #   canMakeDecisions = true
+  #   highestSecurityClearance = "ts"
+  # })
+
 }
-*/
+
+resource "okta_user" "test-user-5" {
+  user_type          = "AgencyEmployee"
+  first_name         = "Test"
+  last_name          = "User 5"
+  login              = "zerotrustprototype005@myacuity.com"
+  email              = "zerotrustprototype005@myacuity.com"
+  # custom_profile_attributes = jsonencode({
+  #   canSearch = true
+  #   canMakeDecisions = true
+  #   highestSecurityClearance = "publictrust"
+  # })
+}
 
 resource "okta_app_oauth" "zerotrustdemo-app" {
   label          = "zerotrustdemo"
