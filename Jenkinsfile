@@ -9,17 +9,15 @@ node {
     
     stage('Retrieve Environment Variables') {
 	    def ssmParameterNames = [
-		'/ztd/terraform/aws_s3_bucket',
-		'/ztd/terraform/aws_s3_key',
-		'/ztd/terraform/aws_s3_region',
-		'/ztd/terraform/aws_region',
-		'/ztd/terraform/okta_authorization_header',
-		'/ztd/terraform/okta_base_url',
-		'/ztd/terraform/okta_client_id',
-		'/ztd/terraform/okta_client_secret',
-		'/ztd/terraform/okta_api_token',
-
-
+        '/ztd/terraform/aws_s3_bucket',
+        '/ztd/terraform/aws_s3_key',
+        '/ztd/terraform/aws_s3_region',
+        '/ztd/terraform/aws_region',
+        '/ztd/terraform/okta_authorization_header',
+        '/ztd/terraform/okta_base_url',
+        '/ztd/terraform/okta_client_id',
+        '/ztd/terraform/okta_client_secret',
+        '/ztd/terraform/okta_api_token',
 	    ]
 
 	    def ssmCommand = 'aws ssm get-parameters --names ' +
