@@ -103,11 +103,11 @@ resource "okta_user" "test-user-2" {
   last_name          = "User 2"
   login              = "zerotrustprototype002@myacuity.com"
   email              = "zerotrustprototype002@myacuity.com"
-  # custom_profile_attributes = jsonencode({
-  #   canSearch = true
-  #   canMakeDecisions = true
-  #   highestSecurityClearance = "poly"
-  # })
+  custom_profile_attributes = jsonencode({
+    canSearch = true
+    canMakeDecisions = true
+    highestSecurityClearance = "poly"
+  })
 }
 
 resource "okta_user" "test-user-3" {
@@ -116,11 +116,11 @@ resource "okta_user" "test-user-3" {
   last_name          = "User 3"
   login              = "zerotrustprototype003@myacuity.com"
   email              = "zerotrustprototype003@myacuity.com"
-  # custom_profile_attributes = jsonencode({
-  #   canSearch = true
-  #   canMakeDecisions = false
-  #   highestSecurityClearance = "ts"
-  # })
+  custom_profile_attributes = jsonencode({
+    canSearch = true
+    canMakeDecisions = false
+    highestSecurityClearance = "ts"
+  })
 }
 
 resource "okta_user" "test-user-4" {
@@ -129,11 +129,11 @@ resource "okta_user" "test-user-4" {
   last_name          = "User 4"
   login              = "zerotrustprototype004@myacuity.com"
   email              = "zerotrustprototype004@myacuity.com"
-  # custom_profile_attributes = jsonencode({
-  #   canSearch = false
-  #   canMakeDecisions = true
-  #   highestSecurityClearance = "ts"
-  # })
+  custom_profile_attributes = jsonencode({
+    canSearch = false
+    canMakeDecisions = true
+    highestSecurityClearance = "ts"
+  })
 
 }
 
@@ -143,11 +143,11 @@ resource "okta_user" "test-user-5" {
   last_name          = "User 5"
   login              = "zerotrustprototype005@myacuity.com"
   email              = "zerotrustprototype005@myacuity.com"
-  # custom_profile_attributes = jsonencode({
-  #   canSearch = true
-  #   canMakeDecisions = true
-  #   highestSecurityClearance = "publictrust"
-  # })
+  custom_profile_attributes = jsonencode({
+    canSearch = true
+    canMakeDecisions = true
+    highestSecurityClearance = "publictrust"
+  })
 }
 
 resource "okta_app_oauth" "zerotrustdemo-app" {
