@@ -128,7 +128,7 @@ resource "okta_user" "test-user-3" {
   # })
 }
 
-esource "okta_user" "test-user-4" {
+resource "okta_user" "test-user-4" {
   user_type          = "AgencyEmployee"
   first_name         = "Test"
   last_name          = "User 4"
