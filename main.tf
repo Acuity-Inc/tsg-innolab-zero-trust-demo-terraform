@@ -192,8 +192,8 @@ resource "okta_profile_mapping" "user-claims-mappings" {
     expression = "user.canSearch"
   }
 
-  mappings {
+  /*mappings {
     id         = "canMakeDecisions"
     expression = "user.canMakeDecisions"
-  }
+  }*/
 }
