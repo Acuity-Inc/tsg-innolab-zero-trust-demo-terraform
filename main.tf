@@ -154,6 +154,7 @@ resource "okta_user" "test-user-5" {
   # })
 }
 
+/*
 resource "okta_app_oauth" "zerotrustdemo-app" {
   label          = "zerotrustdemo"
   type           = "browser"
