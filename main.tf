@@ -170,11 +170,11 @@ resource "okta_app_user_schema_property" "can_make_decisions" {
   type        = "boolean"
 }
 
-resource "okta_app_user_schema_property" "highest_clearance_level" {
+resource "okta_app_user_schema_property" "highest_security_clearance" {
   app_id      = okta_app_oauth.zerotrustdemo-app.id
-  index       = "highestClearanceLevel"
-  title       = "Highest Clearance Level"
-  type        = "boolean"
+  index       = "highestSecurityClearance"
+  title       = "Highest Security Clearance"
+  type        = "string"
 }
 
 resource "okta_profile_mapping" "user-claims-mappings" {
@@ -183,7 +183,7 @@ resource "okta_profile_mapping" "user-claims-mappings" {
   delete_when_absent = true
 
   mappings {
-    id         = "formatted"
+    id         = "highestSecurityClearance"
     expression = "user.highestSecurityClearance"
   }
 
@@ -192,8 +192,8 @@ resource "okta_profile_mapping" "user-claims-mappings" {
     expression = "user.canSearch"
   }
 
-  /*mappings {
+  mappings {
     id         = "canMakeDecisions"
     expression = "user.canMakeDecisions"
-  }*/
+  }
 }
