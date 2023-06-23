@@ -205,4 +205,5 @@ resource "okta_profile_mapping" "user-claims-mappings" {
 
 resource "okta_app_signon_policy" "zerotrust-demo" {
   name        = "ZeroTrustDemo"
+  description = "Authentication policy for Zero Trust Prototype"
 }
