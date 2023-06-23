@@ -156,17 +156,18 @@ resource "okta_app_oauth" "zerotrustdemo-app" {
   redirect_uris  = ["http://localhost:3000/login/callback"]
 }
 
-/*resource "okta_profile_mapping" "user-claims-mappings" {
+
+resource "okta_profile_mapping" "user-claims-mappings" {
   source_id          = okta_user_type.agency_employee.id
   target_id          = okta_app_oauth.zerotrustdemo-app.id
   delete_when_absent = true
 
   mappings {
-    id         = "highestSecurityClearance"
+    id         = "formatted"
     expression = "user.highestSecurityClearance"
   }
 
-  mappings {
+/*  mappings {
     id         = "canSearch"
     expression = "user.canSearch"
   }
@@ -175,4 +176,5 @@ resource "okta_app_oauth" "zerotrustdemo-app" {
     id         = "canMakeDecisions"
     expression = "user.canMakeDecisions"
   }
-}*/
+*/
+}
