@@ -30,18 +30,20 @@ provider "okta" {
   
 }
 
+/*
 resource "okta_user_type" "agency_employee" {
   name = "AgencyEmployee"
   display_name = "Agency Employee"
   description = "Agency Employee"
 }
+*/
 
 resource "okta_user_schema_property" "highest_security_clearance" {
   type = "string"
   index = "highestSecurityClearance"
   title = "Highest Security Clearance"
   description = "Highest Security Clearance"
-  user_type = okta_user_type.agency_employee.id
+  // user_type = okta_user_type.agency_employee.id
   required = true
   enum = ["none", "publictrust", "ts", "poly"]
 
@@ -70,7 +72,7 @@ resource "okta_user_schema_property" "can_make_decisions" {
   type = "boolean"
   index = "canMakeDecisions"
   title = "Can Make Decisions?"
-  user_type = okta_user_type.agency_employee.id
+  // user_type = okta_user_type.agency_employee.id
   required = true
 }
 
@@ -78,7 +80,7 @@ resource "okta_user_schema_property" "can_search" {
   type = "boolean"
   index = "canSearch"
   title = "Can Search?"
-  user_type = okta_user_type.agency_employee.id
+  // user_type = okta_user_type.agency_employee.id
   required = true
 }
 
@@ -177,8 +179,11 @@ resource "okta_app_user_schema_property" "highest_security_clearance" {
   type        = "string"
 }
 
+data "okta_user_profile_mapping_source" "user" {}
+
 resource "okta_profile_mapping" "user-claims-mappings" {
-  source_id          = okta_user_type.agency_employee.id
+  // source_id          = okta_user_type.agency_employee.id
+  source_id          = "${data.okta_user_profile_mapping_source.user.id}"
   target_id          = okta_app_oauth.zerotrustdemo-app.id
   delete_when_absent = true
 
