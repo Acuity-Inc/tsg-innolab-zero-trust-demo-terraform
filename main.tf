@@ -82,6 +82,13 @@ resource "okta_user_schema_property" "can_search" {
   required = true
 }
 
+resource "okta_user_schema_property" "can_search_app" {
+  type = "boolean"
+  index = "canSearch"
+  title = "Can Search?"
+  user_type = okta_app_oauth.zerotrustdemo-app.id
+}
+
 resource "okta_user" "test-user-1" {
   user_type          = "AgencyEmployee"
   first_name         = "Test"
@@ -121,7 +128,7 @@ resource "okta_user" "test-user-3" {
   # })
 }
 
-resource "okta_user" "test-user-4" {
+esource "okta_user" "test-user-4" {
   user_type          = "AgencyEmployee"
   first_name         = "Test"
   last_name          = "User 4"
