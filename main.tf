@@ -202,3 +202,7 @@ resource "okta_profile_mapping" "user-claims-mappings" {
     expression = "user.canMakeDecisions"
   }
 }
+
+resource "okta_app_signon_policy" "zerotrust-demo {
+  name        = "ZeroTrustDemo"
+}
