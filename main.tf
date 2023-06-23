@@ -150,12 +150,18 @@ resource "okta_user" "test-user-5" {
   })
 }
 
+resource "okta_app_signon_policy" "zerotrust-demo" {
+  name        = "ZeroTrustDemo"
+  description = "Authentication policy for Zero Trust Prototype"
+}
+
 resource "okta_app_oauth" "zerotrustdemo-app" {
   label          = "zerotrustdemo"
   type           = "browser"
   grant_types    = ["authorization_code"]
   implicit_assignment  = true
   redirect_uris  = ["http://localhost:3000/login/callback"]
+  authentication_policy = okta_app_signon_policy.zerotrust-demo.id
 }
 
 resource "okta_app_user_schema_property" "can_search" {
@@ -201,9 +207,4 @@ resource "okta_profile_mapping" "user-claims-mappings" {
     id         = "canMakeDecisions"
     expression = "user.canMakeDecisions"
   }
-}
-
-resource "okta_app_signon_policy" "zerotrust-demo" {
-  name        = "ZeroTrustDemo"
-  description = "Authentication policy for Zero Trust Prototype"
 }
