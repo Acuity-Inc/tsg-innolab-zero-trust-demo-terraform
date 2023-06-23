@@ -86,7 +86,6 @@ resource "okta_user_schema_property" "can_search_app" {
   type = "boolean"
   index = "canSearch"
   title = "Can Search?"
-  user_type = okta_app_oauth.zerotrustdemo-app.id
 }
 
 resource "okta_user" "test-user-1" {
