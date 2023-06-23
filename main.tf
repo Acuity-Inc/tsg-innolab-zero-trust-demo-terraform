@@ -189,16 +189,16 @@ resource "okta_profile_mapping" "user-claims-mappings" {
 
   mappings {
     id         = "highestSecurityClearance"
-    expression = "appuser.highestSecurityClearance"
+    expression = "user.highestSecurityClearance"
   }
 
   mappings {
     id         = "canSearch"
-    expression = "appuser.canSearch"
+    expression = "user.canSearch"
   }
 
   mappings {
     id         = "canMakeDecisions"
-    expression = "appuser.canMakeDecisions"
+    expression = "user.canMakeDecisions"
   }
 }
