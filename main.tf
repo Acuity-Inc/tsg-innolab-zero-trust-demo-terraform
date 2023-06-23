@@ -90,11 +90,11 @@ resource "okta_user" "test-user-1" {
   last_name          = "User 1"
   login              = "zerotrustprototype001@myacuity.com"
   email              = "zerotrustprototype001@myacuity.com"
-  # custom_profile_attributes = jsonencode({
-  #   canSearch = false
-  #   canMakeDecisions = false
-  #   highestSecurityClearance = "publictrust"
-  # })
+  custom_profile_attributes = jsonencode({
+    canSearch = false
+    canMakeDecisions = false
+    highestSecurityClearance = "publictrust"
+  })
 }
 
 resource "okta_user" "test-user-2" {
