@@ -82,12 +82,6 @@ resource "okta_user_schema_property" "can_search" {
   required = true
 }
 
-resource "okta_user_schema_property" "can_search_app" {
-  type = "boolean"
-  index = "canSearch"
-  title = "Can Search?"
-}
-
 resource "okta_user" "test-user-1" {
   user_type          = "AgencyEmployee"
   first_name         = "Test"
@@ -165,11 +159,24 @@ resource "okta_app_oauth" "zerotrustdemo-app" {
 resource "okta_app_user_schema_property" "can_search" {
   app_id      = okta_app_oauth.zerotrustdemo-app.id
   index       = "canSearch"
-  title       = "canSearch?"
+  title       = "Can Search?"
   type        = "boolean"
 }
 
-/*
+resource "okta_app_user_schema_property" "can_make_decisions" {
+  app_id      = okta_app_oauth.zerotrustdemo-app.id
+  index       = "canMakeDecisions"
+  title       = "Can Make Decisions?"
+  type        = "boolean"
+}
+
+resource "okta_app_user_schema_property" "highest_clearance_level" {
+  app_id      = okta_app_oauth.zerotrustdemo-app.id
+  index       = "highestClearanceLevel"
+  title       = "Highest Clearance Level"
+  type        = "boolean"
+}
+
 resource "okta_profile_mapping" "user-claims-mappings" {
   source_id          = okta_user_type.agency_employee.id
   target_id          = okta_app_oauth.zerotrustdemo-app.id
@@ -190,4 +197,3 @@ resource "okta_profile_mapping" "user-claims-mappings" {
     expression = "user.canMakeDecisions"
   }
 }
-*/
