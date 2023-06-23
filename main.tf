@@ -154,7 +154,6 @@ resource "okta_user" "test-user-5" {
   # })
 }
 
-/*
 resource "okta_app_oauth" "zerotrustdemo-app" {
   label          = "zerotrustdemo"
   type           = "browser"
@@ -163,7 +162,7 @@ resource "okta_app_oauth" "zerotrustdemo-app" {
   redirect_uris  = ["http://localhost:3000/login/callback"]
 }
 
-
+/*
 resource "okta_profile_mapping" "user-claims-mappings" {
   source_id          = okta_user_type.agency_employee.id
   target_id          = okta_app_oauth.zerotrustdemo-app.id
