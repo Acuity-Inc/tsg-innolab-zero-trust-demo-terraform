@@ -162,6 +162,13 @@ resource "okta_app_oauth" "zerotrustdemo-app" {
   redirect_uris  = ["http://localhost:3000/login/callback"]
 }
 
+resource "okta_app_user_schema_property" "can_search" {
+  app_id      = okta_app_oauth.zerotrustdemo-app.id
+  index       = "canSearch"
+  title       = "canSearch?"
+  type        = "boolean"
+}
+
 /*
 resource "okta_profile_mapping" "user-claims-mappings" {
   source_id          = okta_user_type.agency_employee.id
