@@ -174,7 +174,7 @@ resource "okta_profile_mapping" "user-claims-mappings" {
     expression = "user.highestSecurityClearance"
   }
 
-/*  mappings {
+  mappings {
     id         = "canSearch"
     expression = "user.canSearch"
   }
@@ -183,5 +183,5 @@ resource "okta_profile_mapping" "user-claims-mappings" {
     id         = "canMakeDecisions"
     expression = "user.canMakeDecisions"
   }
-*/
 }
+*/
