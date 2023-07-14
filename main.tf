@@ -162,6 +162,7 @@ resource "okta_app_oauth" "zerotrustdemo-app" {
   implicit_assignment  = true
   redirect_uris  = ["http://localhost:3000/login/callback"]
   authentication_policy = okta_app_signon_policy.zerotrust-demo.id
+  token_endpoint_auth_method = "none"
 }
 
 resource "okta_app_user_schema_property" "can_search" {
